@@ -1,23 +1,29 @@
+import './App.css';
 import './Form.css';
 import './Table.css';
 import Table from "./Table";
 import Form from "./Form";
 import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import Login from './components/Login';
+import AdminPage from './components/AdminPage';
+import PrivateRoute from './components/PrivateRoute';
 
-function App() {
-  const [employees, setEmployees] = useState(() => {
-    const saved = localStorage.getItem("employees");
+function AdminPanel() {
+  const [clients, setClients] = useState(() => {
+    const saved = localStorage.getItem("clients");
     return saved ? JSON.parse(saved) : [];
   });
 
   const [name, setName] = useState("");
-  const [job, setJob] = useState("");
+  const [car, setCar] = useState("");
   const [phone, setPhone] = useState("");
   const [editIndex, setEditIndex] = useState(null);
 
   const handleDelete = (indexToRemove) => {
-    setEmployees((prevEmployees) =>
-      prevEmployees.filter((_, index) => index !== indexToRemove)
+    setClients((prevClients) =>
+      prevClients.filter((_, index) => index !== indexToRemove)
     );
     if (editIndex === indexToRemove) {
       handleCancelEdit();
@@ -25,59 +31,60 @@ function App() {
   };
 
   const handleEdit = (index) => {
-    const employee = employees[index];
-    setName(employee.name);
-    setJob(employee.job);
-    setPhone(employee.phone);
+    const client = clients[index];
+    setName(client.name);
+    setCar(client.car);
+    setPhone(client.phone);
     setEditIndex(index);
   };
 
   const handleAdd = () => {
-    if (name.trim() === "" || job.trim() === "" || phone.trim() === "") return;
+    if (name.trim() === "" || car.trim() === "" || phone.trim() === "") return;
 
-    const newEmployee = { name, job, phone };
+    const newClient = { name, car, phone };
 
     if (editIndex !== null) {
-      const updated = [...employees];
-      updated[editIndex] = newEmployee;
-      setEmployees(updated);
+      const updated = [...clients];
+      updated[editIndex] = newClient;
+      setClients(updated);
       setEditIndex(null);
     } else {
-      setEmployees((prevEmployees) => [...prevEmployees, newEmployee]);
+      setClients((prevClients) => [...prevClients, newClient]);
     }
 
     setName("");
-    setJob("");
+    setCar("");
     setPhone("");
   };
 
   const handleSave = () => {
-    localStorage.setItem("employees", JSON.stringify(employees));
+    localStorage.setItem("clients", JSON.stringify(clients));
     alert("Изменения сохранены!");
   };
 
   const handleCancelEdit = () => {
     setEditIndex(null);
     setName("");
-    setJob("");
+    setCar("");
     setPhone("");
   };
 
   return (
     <div className="App">
+      <h1 className="header-title">АВТОМОЙКА — Панель администратора</h1>
       <Form
         name={name}
-        job={job}
+        car={car}
         phone={phone}
         setName={setName}
-        setJob={setJob}
+        setCar={setCar}
         setPhone={setPhone}
         handleAdd={handleAdd}
         handleCancelEdit={handleCancelEdit}
         isEditing={editIndex !== null}
       />
       <Table
-        employees={employees}
+        clients={clients}
         onDelete={handleDelete}
         onEdit={handleEdit}
       />
@@ -87,6 +94,27 @@ function App() {
         </button>
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute role="admin">
+                <AdminPanel />
+              </PrivateRoute>
+            }
+          />
+          <Route path="*" element={<Login />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
