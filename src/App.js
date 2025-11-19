@@ -3,12 +3,12 @@ import './Form.css';
 import './Table.css';
 import Table from "./Table";
 import Form from "./Form";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { AuthContext, AuthProvider } from './context/AuthContext';
 import Login from './components/Login';
-import AdminPage from './components/AdminPage';
 import PrivateRoute from './components/PrivateRoute';
+import ClientPage from './components/ClientPage';
 
 function AdminPanel() {
   const [clients, setClients] = useState(() => {
@@ -20,6 +20,7 @@ function AdminPanel() {
   const [car, setCar] = useState("");
   const [phone, setPhone] = useState("");
   const [editIndex, setEditIndex] = useState(null);
+  const { user, logoutUser } = useContext(AuthContext);
 
   const handleDelete = (indexToRemove) => {
     setClients((prevClients) =>
@@ -71,7 +72,14 @@ function AdminPanel() {
 
   return (
     <div className="App">
-      <h1 className="header-title">АВТОМОЙКА — Панель администратора</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <h1 className="header-title">АВТОМОЙКА — Панель администратора</h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <span style={{ color: 'white', fontSize: '16px' }}>Админ: {user?.username}</span>
+          <button className="primary-button" onClick={logoutUser}>Выйти</button>
+        </div>
+      </div>
+      
       <Form
         name={name}
         car={car}
@@ -111,6 +119,15 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/client"
+            element={
+              <PrivateRoute role="client">
+                <ClientPage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/" element={<Login />} />
           <Route path="*" element={<Login />} />
         </Routes>
       </Router>

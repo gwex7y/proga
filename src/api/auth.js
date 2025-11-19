@@ -1,8 +1,8 @@
 // src/api/auth.js
 
-// Фиктивная проверка логина и пароля (можно заменить на fetch-запрос к серверу)
+// Фиктивная проверка логина и пароля 
 export const login = async ({ username, password }) => {
-    // Пример: жёстко заданная учётка админа
+
     if (username === 'admin' && password === 'admin123') {
       return {
         success: true,
@@ -29,9 +29,9 @@ export const login = async ({ username, password }) => {
     };
   };
   
-  // Заготовка для регистрации (можно подключить позже)
+
   export const register = async ({ username, password, role }) => {
-    // Здесь можно реализовать POST-запрос на сервер
+
     return {
       success: true,
       message: 'Регистрация прошла успешно'
