@@ -1,0 +1,64 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  transition: background 0.3s ease;
+}
+
+/* Используем CSS-переменные для тем */
+:root {
+  --gradient-light: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+body.light-mode {
+  background: var(--gradient-light);
+}
+
+body.dark-mode {
+  background: var(--gradient-dark);
+}
+
+.App {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.header-title {
+  font-size: 42px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 40px;
+  text-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  letter-spacing: 1px;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.header-subtitle {
+  font-size: 18px;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 50px;
+  font-weight: 300;
+  animation: fadeIn 1.2s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
